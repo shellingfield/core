@@ -50,15 +50,15 @@ msgstr "システム: ユーザ管理: 権限追加: ページへのアクセス
 
 #, fuzzy
 msgid "Allow access to the 'Services: NTP' page."
-msgstr "サービス: SNMP: ページへのアクセスを許可"
+msgstr "サービス: NTP: ページへのアクセスを許可"
 
 #, fuzzy
 msgid "Allow access to the 'VPN: OpenVPN: Client Specific Override' page."
-msgstr "OpenVPN: クライアント固有の上書き: ページへのアクセスを許可"
+msgstr "VPN: OpenVPN: クライアント固有の上書き: ページへのアクセスを許可"
 
 #, fuzzy
 msgid "Allow access to the 'VPN: OpenVPN: Client' page."
-msgstr "OpenVPN: クライアント: ページへのアクセスを許可"
+msgstr "VPN: OpenVPN: クライアント: ページへのアクセスを許可"
 
 msgid "Allow access to the 'Interfaces: Assign network ports' page."
 msgstr "インタフェース: ネットワークポートの割り当て: ページへのアクセスを許可"
@@ -87,7 +87,7 @@ msgstr "システム: ユーザ管理: ページへのアクセスを許可"
 #, fuzzy
 msgid ""
 "Allow access to the 'Services: DHCPv6 Server : Edit static mapping' page."
-msgstr "サービス: DHCP サーバ: 静的マッピングの編集: ページへのアクセスを許可"
+msgstr "サービス: DHCPv6 サーバ: 静的マッピングの編集: ページへのアクセスを許可"
 
 msgid "Allow access to the 'Load Balancer: Pool' page."
 msgstr "ロードバランサ: プール: ページへのアクセスを許可"
@@ -105,7 +105,7 @@ msgstr "診断: ログ: 設定: ページへのアクセスを許可"
 #
 # File: lang/dynamic/helpers/acl.php, line: 66
 msgid "Allow access to the 'Service: Universal Plug and Play' page."
-msgstr ""
+msgstr ""サービス: Universal Plug and Play: ページヘのアクセスを許可
 
 msgid "Allow access to the 'Firewall: Virtual IP Addresses' page."
 msgstr "ファイアウォール: 仮想 IP アドレス: ページへのアクセスを許可"
@@ -118,7 +118,7 @@ msgstr "ステータス: サービス: ページへのアクセスを許可"
 
 #, fuzzy
 msgid "Allow access to the 'Status: IPsec: Leases' page."
-msgstr "ステータス: IPsec: ページへのアクセスを許可"
+msgstr "ステータス: IPsec: リース:ページへのアクセスを許可"
 
 msgid ""
 "Allow access to the 'Services: DNS Forwarder: Edit Domain Override' page."
@@ -127,14 +127,14 @@ msgstr "サービス: DNS フォワーダ: ドメイン上書き編集: ペー�
 #
 # File: lang/dynamic/helpers/acl.php, line: 74
 msgid "Allow access to the 'Interfaces: PPPs' page."
-msgstr ""
+msgstr "インタフェース: PPP: ページヘのアクセスを許可"
 
 msgid "Allow access to the 'Firewall: NAT: 1:1' page."
 msgstr "ファイアウォール: NAT: 1:1 : ページへのアクセスを許可"
 
 #, fuzzy
 msgid "Indicates whether the user is allowed to use the proxy"
-msgstr "ユーザがキャプティブポータルにログイン可能かどうかを示します。"
+msgstr "ユーザがプロキシを利用可能かどうかを示す"
 
 msgid "Allow access to the 'Status: System logs: IPsec VPN' page."
 msgstr "ステータス: システムログ: IPsec VPN: ページへのアクセスを許可"
@@ -144,7 +144,7 @@ msgstr "サービス: DHCP サーバ: 静的マッピングの編集: ページ�
 
 #, fuzzy
 msgid "Allow access to the 'Services: DHCPv6 server' page."
-msgstr "サービス: DHCP サーバ: ページへのアクセスを許可"
+msgstr "サービス: DHCPv6 サーバ: ページへのアクセスを許可"
 
 msgid "Allow access to the 'Status: System logs: Load Balancer' page."
 msgstr "ステータス: システムログ: ロードバランサ: ページへのアクセスを許可"
@@ -156,25 +156,25 @@ msgstr ""
 
 #, fuzzy
 msgid "Allow access to the 'Services: DNS Resolver: Edit host' page."
-msgstr "サービス: DNS フォワーダ: ホスト編集: ページへのアクセスを許可"
+msgstr "サービス: DNS リゾルバ: ホスト編集: ページへのアクセスを許可"
 
 msgid "Allow access to the 'Services: SNMP' page."
 msgstr "サービス: SNMP: ページへのアクセスを許可"
 
 #, fuzzy
 msgid "Allow access to the 'Settings: Load Balancer: Settings' page."
-msgstr "サービス: ロードバランサ: リレーアクション: ページへのアクセスを許可"
+msgstr "サービス: ロードバランサ: 設定: ページへのアクセスを許可"
 
 msgid "Allow access to the 'Diagnostics: Show States' page."
 msgstr "診断: ステータス表示: ページへのアクセスを許可"
 
 #, fuzzy
 msgid "Allow access to the 'VPN: OpenVPN: Client Export Utility' page."
-msgstr "OpenVPN: クライアント: ページへのアクセスを許可"
+msgstr "VPN: OpenVPN: クライアントエクスポートユーティリティ: ページへのアクセスを許可"
 
 #, fuzzy
 msgid "Indicates whether the user is able to login for example via SSH."
-msgstr "このユーザが、例えば SSH 経由でログイン可能かどうかを示します。"
+msgstr "ユーザが、例えば SSH 経由でログイン可能かどうかを示す"
 
 msgid "Allow access to the 'Status: Traffic Graph' page."
 msgstr "ステータス: トラフィックグラフ: ページへのアクセスを許可"
@@ -200,7 +200,7 @@ msgstr "診断: ソケット: ページへのアクセスを許可"
 #
 # File: lang/dynamic/helpers/acl.php, line: 99
 msgid "Allow access to the 'Status: Universal Plug and Play' page."
-msgstr ""
+msgstr "ステータス: Universal Plug and Play: ページヘのアクセスを許可"
 
 msgid "Allow access to the 'Services: PPPoE Server' page."
 msgstr "サービス: PPPoE サーバ: ページへのアクセスを許可"
@@ -217,7 +217,7 @@ msgstr "サービス: RFC 2136 クライアント: ページへのアクセス�
 #
 # File: lang/dynamic/helpers/acl.php, line: 105
 msgid "Uploads crash reports to the developers."
-msgstr ""
+msgstr "クラッシュ報告を開発者へ提出する"
 
 msgid "Allow access to the 'Firewall: Alias: Edit' page."
 msgstr "ファイアウォール: エイリアス: 編集: ページへのアクセスを許可"
@@ -246,7 +246,7 @@ msgstr "インタフェース: GRE: ページへのアクセスを許可"
 
 #, fuzzy
 msgid "Allow access to the 'Services: Router Advertisements' page."
-msgstr "サービス: PPPoE サーバ: ページへのアクセスを許可"
+msgstr "サービス: ルータ広告: ページへのアクセスを許可"
 
 msgid "Allow access to the 'VPN: IPsec: Edit Phase 2' page."
 msgstr "VPN: IPsec: フェーズ 2 の編集: ページへのアクセスを許可"
@@ -267,7 +267,7 @@ msgstr ""
 #, fuzzy
 msgid ""
 "Allow access to the 'Services: DNS Resolver: Edit Domain Override' page."
-msgstr "サービス: DNS フォワーダ: ドメイン上書き編集: ページへのアクセスを許可"
+msgstr "サービス: DNS リゾルバ: ドメイン上書き編集: ページへのアクセスを許可"
 
 msgid "Allow access to the 'Firewall: Alias: Import' page."
 msgstr "ファイアウォール: エイリアス: インポート: ページへのアクセスを許可"
@@ -289,7 +289,7 @@ msgstr "システム: 高度: 管理者アクセス: ページへのアクセス
 
 #, fuzzy
 msgid "Allow access to the 'Status: System logs: System: Routing' page."
-msgstr "ステータス: システムログ: ポータル認証: ページへのアクセスを許可"
+msgstr "ステータス: システムログ: システム: ルーティング: ページへのアクセスを許可"
 
 msgid "Allow access to the 'Status: Interfaces' page."
 msgstr "ステータス: インタフェース: ページへのアクセスを許可"
@@ -315,7 +315,7 @@ msgstr "AJAX: サービスプロバイダの取得: ページへのアクセス�
 #
 # File: lang/dynamic/helpers/acl.php, line: 127
 msgid "Allow access to the 'Diagnostics: Logs: Firewall: Normal View' page."
-msgstr ""
+msgstr "診断: ログ: ファイアウォール: 通常表示: ページへのアクセスを許可"
 
 msgid "Allow access to the 'Diagnostics: Halt system' page."
 msgstr "診断: システム停止: ページへのアクセスを許可"
@@ -323,7 +323,7 @@ msgstr "診断: システム停止: ページへのアクセスを許可"
 #
 # File: lang/dynamic/helpers/acl.php, line: 123
 msgid "Allow access to the 'Diagnostics: Logs: L2TP' page."
-msgstr ""
+msgstr "診断: ログ: L2TP: ページヘのアクセスを許可"
 
 #, fuzzy
 msgid "Allow access to the 'Services: Igmpproxy: Edit' page."
@@ -334,7 +334,7 @@ msgstr "システム: ユーザ管理: 設定: LDAP テスト: ページへの�
 
 #, fuzzy
 msgid "Allow access to the 'VPN: L2TP' page."
-msgstr "VPN: VPN L2TP: ページへのアクセスを許可"
+msgstr "VPN: L2TP: ページへのアクセスを許可"
 
 msgid "Allow access to the 'XMLRPC Library' page."
 msgstr "XMLRPC ライブラリ: ページへのアクセスを許可"
@@ -342,10 +342,10 @@ msgstr "XMLRPC ライブラリ: ページへのアクセスを許可"
 #
 # File: lang/dynamic/helpers/acl.php, line: 134
 msgid "Allow access to the 'Diagnostics: Logs: Firewall: Summary View' page."
-msgstr ""
+msgstr "診断: ログ: ファイアウォール: 概要表示: ページヘのアクセスを許可"
 
 msgid "Allow access to the 'Status: IPsec: SPD' page."
-msgstr "ステータス: IPsec SPD: ページへのアクセスを許可"
+msgstr "ステータス: IPsec: SPD: ページへのアクセスを許可"
 
 msgid "Allow access to the 'Status: Filter Reload Status' page."
 msgstr "ステータス: フィルタリロードステータス: ページへのアクセスを許可"
@@ -356,15 +356,15 @@ msgstr "全ページへのアクセスを許可"
 #
 # File: lang/dynamic/helpers/acl.php, line: 150
 msgid "Allow access to the 'Firewall: NAT: NPT: Edit' page."
-msgstr ""
+msgstr "ファイアウォール: NAT: NPT: 編集: ページヘのアクセスを許可"
 
 #, fuzzy
 msgid "Indicates whether the user is allowed to dial in via PPPOE"
-msgstr "このユーザが、例えば SSH 経由でログイン可能かどうかを示します。"
+msgstr "ユーザが PPPoE 経由で接続可能かどうかを示す"
 
 #, fuzzy
 msgid "Allow access to the 'System: Advanced: Notifications' page."
-msgstr "システム: 高度: ネットワーク: ページへのアクセスを許可"
+msgstr "システム: 高度: 通知: ページへのアクセスを許可"
 
 msgid "Allow access to the 'Diagnostics: Logs: DHCP' page."
 msgstr "診断: ログ: DHCP: ページへのアクセスを許可"
@@ -375,11 +375,11 @@ msgstr "システム: ゲートウェイグループ: ページへのアクセ�
 #
 # File: lang/dynamic/helpers/acl.php, line: 156
 msgid "Allow access to the 'Wizard subsystem' page."
-msgstr ""
+msgstr "Wizard subsystem ページヘのアクセスを許可"
 
 #, fuzzy
 msgid "Allow access to the 'Diagnostics: Restore Full Backup' page."
-msgstr "診断: ステータスリセット: ページへのアクセスを許可"
+msgstr "診断: フルバックアップから復元: ページへのアクセスを許可"
 
 msgid "Allow access to the 'Status: CARP' page."
 msgstr "ステータス: CARP: ページへのアクセスを許可"
@@ -389,7 +389,7 @@ msgstr "診断: 認証: ページへのアクセスを許可"
 
 #, fuzzy
 msgid "Allow access to the 'VPN: PPTP' page."
-msgstr "VPN: VPN PPTP: ページへのアクセスを許可"
+msgstr "VPN: PPTP: ページへのアクセスを許可"
 
 msgid "Allow access to the 'Firewall: Rules' page."
 msgstr "ファイアウォール: ルール: ページへのアクセスを許可"
@@ -398,45 +398,45 @@ msgid "Allow access to the 'AJAX: Get Stats' page."
 msgstr "AJAX: 統計の取得: ページへのアクセスを許可"
 
 msgid "Allow access to the 'Diagnostics: Logs: System: Gateways' page."
-msgstr "診断: ログ: システム: ゲートウェイページへのアクセスを許可"
+msgstr "診断: ログ: システム: ゲートウェイ: ページへのアクセスを許可"
 
 msgid "Allow access to the 'Services: DHCPv6 Relay' page."
 msgstr "サービス: DHCPv6 リレー: ページへのアクセスを許可"
 
 #, fuzzy
 msgid "Allow access to the 'Services: DNS Resolver: Advanced' page."
-msgstr "サービス: DNS フォワーダ: ページへのアクセスを許可"
+msgstr "サービス: DNS リゾルバ: 高度な設定: ページへのアクセスを許可"
 
 msgid "Allow access to the 'Services: Load Balancer: Virtual Servers' page."
 msgstr "サービス: ロードバランサ: 仮想サーバ: ページへのアクセスを許可"
 
 #, fuzzy
 msgid "Allow access to the 'Status: NTP' page."
-msgstr "ステータス: CARP: ページへのアクセスを許可"
+msgstr "ステータス: NTP: ページへのアクセスを許可"
 
 #, fuzzy
 msgid "Allows access to the 'Diagnostics: Limiter Info' page"
-msgstr "診断: パターン: ページへのアクセスを許可"
+msgstr "診断: リミッタ情報: ページへのアクセスを許可"
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 155
 msgid "Allow access to the 'Diagnostics: Logs: Firewall: Plain View' page."
-msgstr ""
+msgstr "診断: ログ: ファイアウォール: 通常表時"
 
 msgid "Allow access to the 'Diagnostics: Logs: System: Resolver' page."
-msgstr "診断: ログ: システム: リゾルバページへのアクセスを許可"
+msgstr "診断: ログ: システム: リゾルバ: ページへのアクセスを許可"
 
 msgid "Allow access to the 'Status: Wireless' page."
 msgstr "ステータス: 無線: ページへのアクセスを許可"
 
 #, fuzzy
 msgid "Allow access to the 'Status: NTP PPS' page."
-msgstr "ステータス: CARP: ページへのアクセスを許可"
+msgstr "ステータス: NTP PPS: ページへのアクセスを許可"
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 154
 msgid "Allow access to the 'Diagnostics: Logs: PPTP' page."
-msgstr ""
+msgstr "診断: ログ: PPTP: ページヘのアクセスを許可"
 
 msgid "Allow access to the 'Diagnostics: NanoBSD' page."
 msgstr "診断: NanoBSD: ページへのアクセスを許可"
@@ -446,7 +446,7 @@ msgstr "システム: CA 管理: ページへのアクセスを許可"
 
 #, fuzzy
 msgid "Allow access to all pages required for the dashboard."
-msgstr "javascript の必要条件: ページへのアクセスを許可"
+msgstr "ダッシュボードに必要とされるすべてのページへのアクセスを許可"
 
 msgid "Allow access to the 'Diagnostics: Patterns' page."
 msgstr "診断: パターン: ページへのアクセスを許可"
@@ -456,7 +456,7 @@ msgstr "システム: ユーザパスワード管理: ページへのアクセ�
 
 #, fuzzy
 msgid "Allow access to 'Interfaces: QinQ: Edit' page"
-msgstr "インタフェース: QinQ: ページへのアクセスを許可"
+msgstr "インタフェース: QinQ: 編集: ページへのアクセスを許可"
 
 msgid "Allow access to the 'Firewall: Rules: Edit' page."
 msgstr "ファイアウォール: ルール: 編集: ページへのアクセスを許可"
@@ -466,7 +466,7 @@ msgstr "診断: パケットキャプチャ: ページへのアクセスを許�
 
 #, fuzzy
 msgid "Allow access to the 'Services: DNS Resolver: Access Lists' page."
-msgstr "サービス: DNS フォワーダ: ホスト編集: ページへのアクセスを許可"
+msgstr "サービス: DNS リゾルバ: アクセスリスト: ページへのアクセスを許可"
 
 msgid "Allow access to the 'Firewall: NAT: Outbound: Edit' page."
 msgstr "ファイアウォール: NAT: 外向き: 編集: ページへのアクセスを許可"
@@ -479,32 +479,32 @@ msgstr "インタフェース: 無線: 編集: ページへのアクセスを許
 
 #, fuzzy
 msgid "Allow access to the 'Diagnostics: Test Port' page."
-msgstr "診断: テーブル: ページへのアクセスを許可"
+msgstr "診断: ポートテスト: ページへのアクセスを許可"
 
 msgid "Allow access to the 'Diagnostics: Logs: System' page."
 msgstr "診断: ログ: システム: ページへのアクセスを許可"
 
 #, fuzzy
 msgid "Allow access to the 'VPN: L2TP : Users' page."
-msgstr "VPN: VPN L2TP: ユーザ: ページへのアクセスを許可"
+msgstr "VPN: L2TP: ユーザ: ページへのアクセスを許可"
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 191
 msgid "If present, ignores requests from this user to write config.xml."
-msgstr ""
+msgstr "すでに config.xml が存在する場合、このユーザの変更を無視する"
 
 #, fuzzy
 msgid "Allow access to the 'Interfaces: Groups: Edit' page."
-msgstr "インタフェース: GIF: 編集: ページへのアクセスを許可"
+msgstr "インタフェース: グループ: 編集: ページへのアクセスを許可"
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 177
 msgid "Allow access to the 'Diagnostics: Logs: Firewall: Dynamic View' page."
-msgstr ""
+msgstr "診断: ログ: ファイアウォール: 動的表示: ページヘのアクセスを許可"
 
 #, fuzzy
 msgid "Allows access to the 'Diagnostics: pfInfo' page"
-msgstr "診断: Ping: ページへのアクセスを許可"
+msgstr "診断: pfInfo: ページへのアクセスを許可"
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 195
