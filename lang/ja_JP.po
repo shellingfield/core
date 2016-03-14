@@ -40,7 +40,7 @@ msgstr "VPN: VPN PPTP: ユーザ: 編集: ページへのアクセスを許可"
 #
 # File: lang/dynamic/helpers/acl.php, line: 44
 msgid "Show all items on help menu"
-msgstr ""
+msgstr "コンソールメニューにすべての項目を表示"
 
 msgid "Allow access to the 'System: Firmware: Settings' page."
 msgstr "システム: ファームウェア: 設定: ページへのアクセスを許可"
@@ -594,7 +594,7 @@ msgstr "ステータス: サービス: ページへのアクセスを許可"
 
 #, fuzzy
 msgid "Indicates whether the user is allowed to dial in via L2TP"
-msgstr "このユーザが、例えば SSH 経由でログイン可能かどうかを示します。"
+msgstr "このユーザが、例えば L2TP 経由でログイン可能かどうかを示します。"
 
 msgid "Allow access to the 'Status: Load Balancer: Pool' page."
 msgstr "ステータス: ロードバランサ: プール: ページへのアクセスを許可"
@@ -2435,7 +2435,7 @@ msgstr "PPPoE サーバ"
 
 #, fuzzy
 msgid "L2TP server"
-msgstr "NTP サーバ"
+msgstr "L2TP サーバ"
 
 #, fuzzy
 msgid "OpenVPN server"
@@ -3723,13 +3723,13 @@ msgstr "コンソールメニューをパスワードで保護"
 
 #, fuzzy, php-format
 msgid "The password has been reset."
-msgstr "パスワードが一致しません"
+msgstr "パスワードが初期化されました"
 
 #
 # File: src/etc/rc.initial.password, line: 80
 #, php-format
 msgid "Please change the password as soon as you log in!"
-msgstr ""
+msgstr "ログインしたらすぐにでもパスワードを変更してください"
 
 #, fuzzy, php-format
 msgid "Do you want to enable the %s server on %s?"
