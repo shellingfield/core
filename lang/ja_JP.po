@@ -40,7 +40,7 @@ msgstr "VPN: VPN PPTP: ユーザ: 編集: ページへのアクセスを許可"
 #
 # File: lang/dynamic/helpers/acl.php, line: 44
 msgid "Show all items on help menu"
-msgstr "コンソールメニューにすべての項目を表示"
+msgstr "ヘルプメニューにすべての項目を表示"
 
 msgid "Allow access to the 'System: Firmware: Settings' page."
 msgstr "システム: ファームウェア: 設定: ページへのアクセスを許可"
