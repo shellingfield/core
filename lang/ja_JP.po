@@ -1458,7 +1458,7 @@ msgstr ""
 #
 # File: lang/dynamic/helpers/models.php, line: 107
 msgid "NPT (IPv6)"
-msgstr ""
+msgstr "NPT (IPV6)"
 
 msgid "NAT"
 msgstr "NAT"
@@ -1602,7 +1602,7 @@ msgstr ""
 # File: lang/dynamic/helpers/models.php, line: 204
 # File: lang/dynamic/helpers/models.php, line: 207
 msgid "Domains"
-msgstr ""
+msgstr "ドメイン"
 
 msgid "DNS Forwarder"
 msgstr "DNS フォワーダ"
@@ -1625,7 +1625,7 @@ msgstr "DNS リゾルバ"
 #
 # File: lang/dynamic/helpers/models.php, line: 214
 msgid "DynDNS"
-msgstr ""
+msgstr "ダイナミック DNS"
 
 msgid "RFC 2136"
 msgstr "RFC 2136"
@@ -1703,7 +1703,7 @@ msgstr ""
 #
 # File: lang/dynamic/helpers/models.php, line: 248
 msgid "Proxy"
-msgstr ""
+msgstr "プロキシ"
 
 msgid "SNMP"
 msgstr "SNMP"
@@ -1713,7 +1713,7 @@ msgstr "SNMP"
 # File: lang/dynamic/helpers/models.php, line: 173
 # File: src/www/status_upnp.php, line: 44
 msgid "Universal Plug and Play"
-msgstr ""
+msgstr "Universal Plug and Play"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 145
