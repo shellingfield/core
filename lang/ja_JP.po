@@ -1206,7 +1206,7 @@ msgstr "ステータス"
 # File: src/www/diag_logs_proxy.php, line: 49
 # File: src/www/diag_logs_relayd.php, line: 48
 msgid "Log File"
-msgstr ""
+msgstr "ログファイル"
 
 msgid "Routes"
 msgstr "ルート"
@@ -14400,7 +14400,7 @@ msgstr ""
 
 #, fuzzy
 msgid "OpenDNS Setup"
-msgstr "全般設定"
+msgstr "OpenDNS 設定"
 
 #
 # File: src/www/services_opendns.php, line: 133
