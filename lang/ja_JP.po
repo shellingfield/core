@@ -733,26 +733,29 @@ msgstr "このゾーンを有効にする"
 #
 # File: lang/dynamic/helpers/controllers.php, line: 96
 msgid "Internal number used for this zone"
-msgstr ""
+msgstr "このゾーンで使用されている内部番号"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 97
 msgid "Select interface(s) to enable for captive portal."
-msgstr ""
+msgstr "キャプティブポータルを有効にするインタフェースを選択"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 98
 msgid ""
 "Select authentication methods to use, leave empty for no authentication "
 "needed."
-msgstr ""
+msgstr "使用する認証方法を選択"
+"認証を必要としない場合は空欄のままとする"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 39
 msgid ""
 "Clients will be disconnected after this amount of inactivity. They may log "
 "in again immediately, though. Enter 0 to disable idle timeout."
-msgstr ""
+msgstr "クライアントはアイドル状態が指定した時間経過したら切断される"
+"ただしすぐに再接続することは可能"
+"アイドルタイムアウトを無効にしたい場合には 0 を指定する"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 40
@@ -760,7 +763,10 @@ msgid ""
 "Clients will be disconnected after this amount of time, regardless of "
 "activity. They may log in again immediately, though. Enter 0 to disable hard "
 "timeout (not recommended unless an idle timeout is set)."
-msgstr ""
+msgstr "アクティビティにかかわらず、クライアントは指定した時間を経過したら切断される"
+"ただしすぐに再接続することは可能"
+"ハードタイムアウトを無効にしたい場合には 0 を指定する"
+"(アイドルタイムアウトを設定しない場合には非推奨)"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 101
@@ -768,14 +774,15 @@ msgid ""
 "If this option is set, users can login on multiple machines at once. If "
 "disabled subsequent logins will cause machines previously logged in with the "
 "same username to be disconnected."
-msgstr ""
+msgstr "この設定が有効の場合、同時に複数の端末からのログインが可能となる
+"無効の場合には、同ユーザでの直前のログインが切断される""
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 102
 msgid ""
 "If provided, all traffic will be transmitted over an HTTPS connection to "
 "protect against eavesdroppers."
-msgstr ""
+msgstr "この設定が有効の場合、盗聴から保護するためにすべてのトラフィックを HTTPS を通じて送信します"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 103
@@ -784,22 +791,25 @@ msgid ""
 "this interface IP address, otherwise make sure the client can access DNS to "
 "resolve this location. When using a SSL certificate, make sure both this "
 "name and the cert name are equal."
-msgstr ""
+msgstr "ログインページヘアクセスするための(本サーバの)ホスト名を指定する"
+"ネットワークインタフェースに割り当てられた IP アドレスを使用する場合は空白にしておく"
+"もしくは、クライアントが DNS で本ホストの名前解決を間違いなく行えること"
+"また SSL 接続を使用する場合、この項目と証明書に記載されたホスト名とを一致させること"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 104
 msgid "Avoid authentication for addresses and subnets in this list"
-msgstr ""
+msgstr "このリスト上の IP アドレス及びサブネットに対しては認証を行わない"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 105
 msgid "Avoid authentication for physical addresses in this list"
-msgstr ""
+msgstr "このリスト上の物理アドレスに対しては認証を行わない"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 106
 msgid "Use custom template package for user login"
-msgstr ""
+msgstr "ユーザログインにカスタムテンプレートを使用する"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 107
