@@ -873,16 +873,16 @@ msgstr "必要であればジョブに対するパラメータを入力"
 
 #, fuzzy
 msgid "Enter a description to explain what this job is intended for."
-msgstr "何のためのジョブなのかの説明を入力"
+msgstr "何を意図したジョブなのかの説明を入力"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 63
 msgid "set action to perform here, only used when in IPS mode"
-msgstr ""
+msgstr "IPS モード時に限り、実行するアクションをここにセットする。"
 
 #, fuzzy
 msgid "enable IDS"
-msgstr "IDS を有効化"
+msgstr "IDS を有効にする"
 
 #, fuzzy
 msgid "Select interface(s) to use."
@@ -890,21 +890,21 @@ msgstr "使用するインタフェースを選択"
 
 #, fuzzy
 msgid "Enter a filename for storing the blacklist."
-msgstr "このホストに追加する名前を入力してください"
+msgstr "ブラックリストを保存するファイル名を入力"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 66
 msgid "Enter an url to fetch the blacklist from."
-msgstr ""
+msgstr "取得するブラックリストの URL を入力"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 67
 msgid "Enter a description to explain what this blacklist is intended for."
-msgstr ""
+msgstr "何を意図したブラックリストなのかの説明を入力"
 
 #, fuzzy
 msgid "Enable or disable the proxy service."
-msgstr "IGMP プロキシサービスを起動しました"
+msgstr "プロキシサービスを有効化 あるいは 無効化"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 36
@@ -912,15 +912,16 @@ msgid ""
 "The port number where Squid sends and receives ICP queries to and from "
 "neighbor caches. Leave blank to disable (default). The standard UDP port for "
 "ICP is 3130."
-msgstr ""
+msgstr Squid が ICP クエリを送受信するポート番号を入力"
+msgstr "クエリを無効にしたい場合は空白のままにする(既定値)。ICP 用の標準 UDP ポートは 3130 番"
 
 #, fuzzy
 msgid "Enable access logging."
-msgstr "CARP ログを有効"
+msgstr "アクセスログを取得する"
 
 #, fuzzy
 msgid "Enable store logging."
-msgstr "リモートログを有効"
+msgstr "キャッシュログを取得する"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 39
