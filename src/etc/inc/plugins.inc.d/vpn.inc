@@ -35,7 +35,7 @@ function vpn_configure()
     return array(
         'vpn_pptpd_configure',
         'vpn_pppoes_configure',
-        'vpn_l2tp_configure'
+        'vpn_l2tp_configure',
     );
 }
 
@@ -77,10 +77,10 @@ function vpn_services()
                     'php' => array(
                         'restart' => array('vpn_pppoe_configure_by_id'),
                         'start' => array('vpn_pppoe_configure_by_id'),
-                        'args' => array('pppoeid'),
+                        'args' => array('id'),
                     ),
                     'pidfile' => "/var/run/pppoe{$pppoecfg['pppoeid']}-vpn.pid",
-                    'pppoeid' => $pppoecfg['pppoeid'],
+                    'id' => $pppoecfg['pppoeid'],
                     'name' => 'pppoed',
                 );
             }
@@ -111,6 +111,7 @@ function vpn_pptpd_configure()
     $pptpdcfg = $config['pptpd'];
 
     killbypid('/var/run/pptp-vpn.pid', 'TERM', true);
+    mwexec('rm -rf /var/etc/pptp-vpn');
 
     if (!isset($pptpdcfg['mode']) || $pptpdcfg['mode'] == 'off') {
         return 0;
@@ -120,87 +121,46 @@ function vpn_pptpd_configure()
         echo gettext("Configuring PPTP VPN service...");
     }
 
-  /* remove mpd.conf, if it exists */
-    @unlink('/var/etc/pptp-vpn/mpd.conf');
-    @unlink('/var/etc/pptp-vpn/mpd.links');
-    @unlink('/var/etc/pptp-vpn/mpd.secret');
-
     if (empty($pptpdcfg['n_pptp_units'])) {
         log_error("Something wrong in the PPTPd configuration. Preventing starting the daemon because issues would arise.");
         return;
     }
 
-  /* make sure pptp-vpn directory exists */
-    @mkdir('/var/etc/pptp-vpn');
+    mkdir('/var/etc/pptp-vpn');
 
     switch ($pptpdcfg['mode']) {
         case 'server':
-          /* write mpd.conf */
+            /* write mpd.conf */
             $fd = fopen('/var/etc/pptp-vpn/mpd.conf', 'w');
             if (!$fd) {
                 printf(gettext("Error: cannot open mpd.conf in vpn_pptpd_configure().") . "\n");
                 return 1;
             }
 
+            $iprange = $pptpdcfg['remoteip'] . ' ';
+            $iprange .= long2ip32(ip2long($pptpdcfg['remoteip']) + $pptpdcfg['n_pptp_units'] - 1);
+
             $mpdconf = <<<EOD
+startup:
+
 pptps:
+  set ippool add pool1 {$iprange}
 
-EOD;
-
-            for ($i = 0; $i < $pptpdcfg['n_pptp_units']; $i++) {
-                $mpdconf .= "  load pt{$i}\n";
-            }
-
-            for ($i = 0; $i < $pptpdcfg['n_pptp_units']; $i++) {
-
-                $clientip = long2ip32(ip2long($pptpdcfg['remoteip']) + $i);
-
-                $mpdconf .= <<<EOD
-
-pt{$i}:
-  new -i pptpd{$i} pt{$i} pt{$i}
-  set ipcp ranges {$pptpdcfg['localip']}/32 {$clientip}/32
-  load pts
-
-EOD;
-            }
-
-            $mpdconf .=<<<EOD
-
-pts:
+  create bundle template B
   set iface disable on-demand
   set iface enable proxy-arp
   set iface enable tcpmssfix
   set iface idle 1800
   set iface up-script /usr/local/sbin/vpn-linkup
   set iface down-script /usr/local/sbin/vpn-linkdown
-  set bundle enable multilink
-  set bundle enable crypt-reqd
-  set link yes acfcomp protocomp
-  set link no pap chap
-  set link enable chap-msv2
-  set link mtu 1460
-  set link keep-alive 10 60
+  set ipcp ranges {$pptpdcfg['localip']}/32 ippool pool1
   set ipcp yes vjcomp
-  set bundle enable compression
-  set ccp yes mppc
-  set ccp yes mpp-e128
-  set ccp yes mpp-stateless
 
 EOD;
-
-            if (!isset($pptpdcfg['req128'])) {
-                $mpdconf .=<<<EOD
-  set ccp yes mpp-e40
-  set ccp yes mpp-e56
-
-EOD;
-            }
 
             if (isset($pptpdcfg["wins"]) && $pptpdcfg['wins'] != "") {
                 $mpdconf  .=  "  set ipcp nbns {$pptpdcfg['wins']}\n";
             }
-
             if (!empty($pptpdcfg['dns1'])) {
                 $mpdconf .= "  set ipcp dns " . $pptpdcfg['dns1'];
                 if (!empty($pptpdcfg['dns2'])) {
@@ -222,6 +182,39 @@ EOD;
             } elseif (is_array($syscfg['dnsserver']) && ($syscfg['dnsserver'][0])) {
                 $mpdconf .= "  set ipcp dns " . join(" ", $syscfg['dnsserver']) . "\n";
             }
+
+            $mpdconf .= <<<EOD
+
+  set bundle enable crypt-reqd
+  set bundle enable compression
+  set ccp yes mppc
+  set mppc yes e128
+  set mppc yes stateless
+
+EOD;
+
+            if (!isset($pptpdcfg['req128'])) {
+                $mpdconf .=<<<EOD
+  set mppc yes e40
+  set mppc yes e56
+
+EOD;
+            }
+
+            $mpdconf .= <<<EOD
+
+  create link template L pptp
+  set link action bundle B
+  set link enable multilink
+  set link yes acfcomp protocomp
+  set link no pap chap eap
+  set link enable chap-msv2
+  set link mtu 1460
+  set link keep-alive 10 60
+  set pptp self {$pptpdcfg['localip']}
+  set link enable incoming
+
+EOD;
 
             if (isset($pptpdcfg['radius']['server']['enable'])) {
                 $authport = (isset($pptpdcfg['radius']['server']['port']) && strlen($pptpdcfg['radius']['server']['port']) > 1) ? $pptpdcfg['radius']['server']['port'] : 1812;
@@ -258,32 +251,7 @@ EOD;
             fclose($fd);
             unset($mpdconf);
 
-          /* write mpd.links */
-            $fd = fopen('/var/etc/pptp-vpn/mpd.links', 'w');
-            if (!$fd) {
-                printf(gettext("Error: cannot open mpd.links in vpn_pptpd_configure().") . "\n");
-                return 1;
-            }
-
-            $mpdlinks = "";
-
-            for ($i = 0; $i < $pptpdcfg['n_pptp_units']; $i++) {
-                $mpdlinks .=<<<EOD
-
-pt{$i}:
-  set link type pptp
-  set pptp enable incoming
-  set pptp disable originate
-  set pptp disable windowing
-
-EOD;
-            }
-
-            fwrite($fd, $mpdlinks);
-            fclose($fd);
-            unset($mpdlinks);
-
-          /* write mpd.secret */
+            /* write mpd.secret */
             $fd = fopen('/var/etc/pptp-vpn/mpd.secret', 'w');
             if (!$fd) {
                 printf(gettext("Error: cannot open mpd.secret in vpn_pptpd_configure().") . "\n");
@@ -305,7 +273,7 @@ EOD;
             unset($mpdsecret);
             chmod('/var/etc/pptp-vpn/mpd.secret', 0600);
 
-          /* fixed to WAN elsewhere, no need to extend, but at least make it work */
+            /* fixed to WAN elsewhere, no need to extend, but at least make it work */
             legacy_netgraph_attach(get_real_interface('wan'));
 
             mwexec('/usr/local/sbin/mpd5 -b -d /var/etc/pptp-vpn -p /var/run/pptp-vpn.pid -s pptps pptps');
@@ -363,6 +331,7 @@ function vpn_pppoe_configure(&$pppoecfg)
     $syscfg = $config['system'];
 
     killbypid("/var/run/pppoe{$pppoecfg['pppoeid']}-vpn.pid", 'TERM', true);
+    mwexec("rm -rf /var/etc/pppoe{$pppoecfg['pppoeid']}-vpn");
 
     if (!isset($pppoecfg['mode']) || $pppoecfg['mode'] == 'off') {
         return 0;
@@ -372,21 +341,13 @@ function vpn_pppoe_configure(&$pppoecfg)
         echo gettext("Configuring PPPoE VPN service...");
     }
 
+    mkdir("/var/etc/pppoe{$pppoecfg['pppoeid']}-vpn");
+
     switch ($pppoecfg['mode']) {
-
         case 'server':
-          /* create directory if it does not exist */
-            @mkdir("/var/etc/pppoe{$pppoecfg['pppoeid']}-vpn");
-
             $pppoe_interface = get_real_interface($pppoecfg['interface']);
 
-            if ($pppoecfg['paporchap'] == "chap") {
-                $paporchap = "set link enable chap";
-            } else {
-                $paporchap = "set link enable pap";
-            }
-
-          /* write mpd.conf */
+            /* write mpd.conf */
             $fd = fopen("/var/etc/pppoe{$pppoecfg['pppoeid']}-vpn/mpd.conf", "w");
             if (!$fd) {
                 printf(gettext("Error: cannot open mpd.conf in vpn_pppoe_configure().") . "\n");
@@ -432,8 +393,8 @@ pppoe_standard:
   set iface disable proxy-arp
   set iface enable tcpmssfix
   set iface mtu 1500
-  set link no pap chap
-  {$paporchap}
+  set link no pap chap eap
+  set link enable chap
   set link keep-alive 60 180
   set ipcp yes vjcomp
   set ipcp no vjcomp
@@ -444,8 +405,6 @@ pppoe_standard:
   set ccp yes mpp-e128
   set ccp yes mpp-stateless
   set link latency 1
-  #set ipcp dns 10.10.1.3
-  #set bundle accept encryption
 
 EOD;
 
@@ -500,7 +459,7 @@ EOD;
             fclose($fd);
             unset($mpdconf);
 
-          /* write mpd.links */
+            /* write mpd.links */
             $fd = fopen("/var/etc/pppoe{$pppoecfg['pppoeid']}-vpn/mpd.links", "w");
             if (!$fd) {
                 printf(gettext("Error: cannot open mpd.links in vpn_pppoe_configure().") . "\n");
@@ -527,7 +486,7 @@ EOD;
             unset($mpdlinks);
 
             if ($pppoecfg['username']) {
-              /* write mpd.secret */
+                /* write mpd.secret */
                 $fd = fopen("/var/etc/pppoe{$pppoecfg['pppoeid']}-vpn/mpd.secret", "w");
                 if (!$fd) {
                     printf(gettext("Error: cannot open mpd.secret in vpn_pppoe_configure().") . "\n");
@@ -569,6 +528,7 @@ function vpn_l2tp_configure()
     global $config;
 
     killbypid('/var/run/l2tp-vpn.pid', 'TERM', true);
+    mwexec('rm -rf /var/etc/l2tp-vpn');
 
     $syscfg = $config['system'];
     if (isset($config['l2tp'])) {
@@ -585,70 +545,39 @@ function vpn_l2tp_configure()
         echo gettext('Configuring L2TP VPN service...');
     }
 
-    @mkdir('/var/etc/l2tp-vpn');
+    mkdir('/var/etc/l2tp-vpn');
 
-    switch (isset($l2tpcfg['mode'])?$l2tpcfg['mode']:null) {
-
+    switch ($l2tpcfg['mode']) {
         case 'server':
-            if ($l2tpcfg['paporchap'] == "chap") {
-                $paporchap = "set link enable chap";
-            } else {
-                $paporchap = "set link enable pap";
-            }
 
-          /* write mpd.conf */
+            /* write mpd.conf */
             $fd = fopen("/var/etc/l2tp-vpn/mpd.conf", "w");
             if (!$fd) {
                 printf(gettext("Error: cannot open mpd.conf in vpn_l2tp_configure().") . "\n");
                 return 1;
             }
-            $mpdconf = "\n\n";
-            $mpdconf .=<<<EOD
+
+            $iprange = $l2tpcfg['remoteip'] . ' ';
+            $iprange .= long2ip32(ip2long($l2tpcfg['remoteip']) + $l2tpcfg['n_l2tp_units'] - 1);
+
+            $iptype = "ippool pool1";
+            if (isset($l2tpcfg['radius']['enable']) && isset($l2tpcfg['radius']['radiusissueips'])) {
+                $iptype = "0.0.0.0/0";
+            }
+
+            $mpdconf = <<<EOD
+startup:
+
 l2tps:
+  set ippool add pool1 {$iprange}
 
-EOD;
-
-            for ($i = 0; $i < $l2tpcfg['n_l2tp_units']; $i++) {
-                $mpdconf .= "  load l2tp{$i}\n";
-            }
-
-            for ($i = 0; $i < $l2tpcfg['n_l2tp_units']; $i++) {
-
-                $clientip = long2ip32(ip2long($l2tpcfg['remoteip']) + $i);
-
-                if (isset($l2tpcfg['radius']['radiusissueips']) && isset($l2tpcfg['radius']['enable'])) {
-                    $isssue_ip_type = "set ipcp ranges {$l2tpcfg['localip']}/32 0.0.0.0/0";
-                } else {
-                    $isssue_ip_type = "set ipcp ranges {$l2tpcfg['localip']}/32 {$clientip}/32";
-                }
-
-                $mpdconf .=<<<EOD
-
-l2tp{$i}:
-  new -i l2tp{$i} l2tp{$i} l2tp{$i}
-  {$isssue_ip_type}
-  load l2tp_standard
-
-EOD;
-            }
-
-            $mpdconf .=<<<EOD
-
-l2tp_standard:
-  set bundle disable multilink
-  set bundle enable compression
-  set bundle yes crypt-reqd
-  set ipcp yes vjcomp
-  # set ipcp ranges 131.188.69.161/32 131.188.69.170/28
-  set ccp yes mppc
+  create bundle template B
   set iface disable on-demand
   set iface enable proxy-arp
   set iface up-script /usr/local/sbin/vpn-linkup
   set iface down-script /usr/local/sbin/vpn-linkdown
-  set link yes acfcomp protocomp
-  set link no pap chap
-  set link enable chap
-  set link keep-alive 10 180
+  set ipcp ranges {$l2tpcfg['localip']}/32 {$iptype}
+  set ipcp yes vjcomp
 
 EOD;
 
@@ -661,20 +590,43 @@ EOD;
                     $mpdconf .= " " . $l2tpcfg['dns2'];
                 }
                 $mpdconf .= "\n";
-            } elseif (isset($config['dnsmasq']['enable'])) {
+            } elseif (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) {
                 $mpdconf .= "  set ipcp dns " . get_interface_ip("lan");
-                if ($syscfg['dnsserver'][0]) {
+                if (isset($syscfg['dnsserver'][0])) {
                     $mpdconf .= " " . $syscfg['dnsserver'][0];
                 }
                 $mpdconf .= "\n";
-            } elseif (isset($config['unbound']['enable'])) {
-                $mpdconf .= "  set ipcp dns " . get_interface_ip("lan");
-                if ($syscfg['dnsserver'][0]) {
-                    $mpdconf .= " " . $syscfg['dnsserver'][0];
-                }
-                $mpdconf .= "\n";
-            } elseif (is_array($syscfg['dnsserver']) && ($syscfg['dnsserver'][0])) {
+            } elseif (isset($syscfg['dnsserver'][0])) {
                 $mpdconf .= "  set ipcp dns " . join(" ", $syscfg['dnsserver']) . "\n";
+            }
+
+            if ($l2tpcfg['paporchap'] == "chap") {
+                $paporchap = "set link enable chap";
+            } else {
+                $paporchap = "set link enable pap";
+            }
+
+            $mpdconf .= <<<EOD
+
+  set bundle enable crypt-reqd
+  set bundle enable compression
+  set ccp yes mppc
+
+  create link template L l2tp
+  set link action bundle B
+  set link enable multilink
+  set link yes acfcomp protocomp
+  set link no pap chap eap
+  {$paporchap}
+  set link keep-alive 10 60
+  set link mtu 1460
+  set l2tp self ${l2tpcfg['localip']}
+  set link enable incoming
+
+EOD;
+
+            if (!empty($l2tpcfg['secret'])) {
+                $mpdconf .= "  set l2tp secret {$l2tpcfg['secret']}\n";
             }
 
             if (isset($l2tpcfg['radius']['enable'])) {
@@ -698,34 +650,7 @@ EOD;
             fclose($fd);
             unset($mpdconf);
 
-          /* write mpd.links */
-            $fd = fopen("/var/etc/l2tp-vpn/mpd.links", "w");
-            if (!$fd) {
-                printf(gettext("Error: cannot open mpd.links in vpn_l2tp_configure().") . "\n");
-                return 1;
-            }
-
-            $mpdlinks = "";
-
-            for ($i = 0; $i < $l2tpcfg['n_l2tp_units']; $i++) {
-                $mpdlinks .=<<<EOD
-
-l2tp{$i}:
-  set link type l2tp
-  set l2tp enable incoming
-  set l2tp disable originate
-
-EOD;
-                if (!empty($l2tpcfg['secret'])) {
-                    $mpdlinks .= "set l2tp secret {$l2tpcfg['secret']}\n";
-                }
-            }
-
-            fwrite($fd, $mpdlinks);
-            fclose($fd);
-            unset($mpdlinks);
-
-          /* write mpd.secret */
+            /* write mpd.secret */
             $fd = fopen("/var/etc/l2tp-vpn/mpd.secret", "w");
             if (!$fd) {
                 printf(gettext("Error: cannot open mpd.secret in vpn_l2tp_configure().") . "\n");
@@ -749,9 +674,6 @@ EOD;
 
             mwexec('/usr/local/sbin/mpd5 -b -d /var/etc/l2tp-vpn -p /var/run/l2tp-vpn.pid -s l2tps l2tps');
 
-            break;
-
-        case 'redir':
             break;
     }
 
