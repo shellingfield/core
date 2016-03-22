@@ -928,65 +928,70 @@ msgstr "キャッシュログを取得する"
 msgid ""
 "If set (default), Squid will include a Via header in requests and\n"
 "            replies as required by RFC2616."
-msgstr ""
+msgstr "RFC2616に準じ、Squid が HTTP リクエスト及びレスポンスに\n"
+"Via ヘッダを含めるようにする(既定値)"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 41
 msgid "Select what to do with X-Forwarded for header."
-msgstr ""
+msgstr "X-Forwarded ヘッダをどのように扱うかを選択"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 42
 msgid ""
 "Suppress Squid version string info in HTTP headers and HTML error pages."
-msgstr ""
+msgstr "HTTP ヘッダ及び HTML エラーページ中の Squid のバージョン番号を隠す"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 72
 msgid "Enter the cache memory size to use."
-msgstr ""
+msgstr "使用するキャッシュメモリのサイズを入力"
 
 #, fuzzy
 msgid "Enter the storage size for the local cache (default is 100)."
-msgstr "トラップを送信するポートを入力してください ( デフォルト 162 )"
+msgstr "ローカルキャッシュ用のストレージサイズを入力 (既定値は 100)"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 46
 msgid ""
 "Enter the number of first-level subdirectories for the local cache (default "
 "is 16)."
-msgstr ""
+msgstr "ローカルキャッシュ用のサブディレクトリ数を入力 (既定値は 16)"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 47
 msgid ""
 "Enter the number of first-level subdirectories for the local cache (default "
 "is 256)."
-msgstr ""
+msgstr "ローカルキャッシュ用のサブディレクトリ数を入力 (既定値は 256)"
+""
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 48
 msgid "Enable or disable traffic management."
-msgstr ""
+msgstr "トラフィック管理を有効化 あるいは 無効化"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 49
 msgid ""
 "Enter the maxium size for downloads in kilobytes (leave empty to disable)."
-msgstr ""
+msgstr "ダウンロードの最大値をキロバイト単位で入力"
+"(無制限の場合は空欄のままとする)"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 50
 msgid ""
 "Enter the maxium size for uploads in kilobytes (leave empty to disable)."
-msgstr ""
+msgstr "アップロードの最大値をキロバイト谷で入力"
+"(無制限の場合は空欄のままとする)"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 51
 msgid ""
 "Enter the allowed overall bandtwith in kilobits per second (leave empty to "
 "disable)."
-msgstr ""
+msgstr "許可する帯域幅をキロビット毎秒(Kbps)単位で入力"
+"(無制限の場合は空欄のままとする)"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 52
