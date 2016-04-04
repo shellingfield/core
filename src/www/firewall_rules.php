@@ -139,7 +139,8 @@ include("head.inc");
 <script type="text/javascript">
 $( document ).ready(function() {
   // link delete buttons
-  $(".act_delete").click(function(){
+  $(".act_delete").click(function(event){
+    event.preventDefault();
     var id = $(this).attr("id").split('_').pop(-1);
     if (id != 'x') {
       // delete single
@@ -183,7 +184,8 @@ $( document ).ready(function() {
   });
 
   // link move buttons
-  $(".act_move").click(function(){
+  $(".act_move").click(function(event){
+    event.preventDefault();
     var id = $(this).attr("id").split('_').pop(-1);
     $("#id").val(id);
     $("#action").val("move");
@@ -191,13 +193,16 @@ $( document ).ready(function() {
   });
 
   // link toggle buttons
-  $(".act_toggle").click(function(){
+  $(".act_toggle").click(function(event){
+    event.preventDefault();
     var id = $(this).attr("id").split('_').pop(-1);
     $("#id").val(id);
     $("#action").val("toggle");
     $("#iform").submit();
   });
 
+  // watch scroll position and set to last known on page load
+  watchScrollPosition();
 
   // link category select/search
   $("#fw_category").change(function(){
@@ -236,7 +241,7 @@ $( document ).ready(function() {
   });
 
   // hide category search when not used
-  if ($("#fw_category > option").length == 1) {
+  if ($("#fw_category > option").length == 0) {
       $("#fw_category").addClass('hidden');
   }
 
@@ -677,7 +682,7 @@ $( document ).ready(function() {
                             }
                         }
                         foreach ($categories as $category):?>
-                        <option value="<?=$category;?>"><?=$category;?></value>
+                        <option value="<?=$category;?>"><?=$category;?></option>
 <?php
                         endforeach;?>
                       </select>
@@ -761,10 +766,6 @@ $( document ).ready(function() {
                   </tr>
                   <tr class="hidden-xs hidden-sm">
                     <td colspan="11">
-                      <strong>
-                        <span class="text-danger"><?=gettext("Hint:");?></span>
-                      </strong>
-                      <br />
                       <?php if ("FloatingRules" != $selected_if): ?>
                       <?=gettext("Rules are evaluated on a first-match basis (i.e. " .
                         "the action of the first rule to match a packet will be executed). " .

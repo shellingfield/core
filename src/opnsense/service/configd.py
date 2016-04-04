@@ -32,21 +32,20 @@
     function: delivers a process coordinator to handle frontend functions
 """
 
-__author__ = 'Ad Schellevis'
-
 import os
 import sys
 import logging
 import signal
 import time
+import socket
 import subprocess
 import modules.processhandler
 import modules.csconfigparser
 from modules.daemonize import Daemonize
-import cProfile, pstats
+import cProfile
 
 # find program path
-if len(__file__.split('/')[:-1]) >0 :
+if len(__file__.split('/')[:-1]) > 0:
     program_path = '/'.join(__file__.split('/')[:-1])
 else:
     program_path = os.getcwd()
@@ -55,6 +54,7 @@ else:
 sys.path.append(program_path)
 os.chdir(program_path)
 
+
 def get_config():
     """ open configuration
     """
@@ -62,45 +62,52 @@ def get_config():
     cnf.read('conf/configd.conf')
     return cnf
 
+
 def validate_config(cnf):
     """ validate configuration, exit on missing item
+        :param cnf: config handle
     """
-    for config_item in  ['socket_filename','pid_filename']:
-        if cnf.has_section('main') == False or cnf.has_option('main',config_item) == False:
-            print('configuration item main/%s not found in %s/conf/configd.conf'%(config_item,program_path))
+    for config_item in ['socket_filename', 'pid_filename']:
+        if cnf.has_section('main') == False or cnf.has_option('main', config_item) == False:
+            print('configuration item main/%s not found in %s/conf/configd.conf' % (config_item, program_path))
             sys.exit(0)
+
 
 def main(cnf, simulate=False, single_threaded=False):
     """ configd startup
+        :param cnf: config handle
+        :param simulate: simulate only
+        :param single_threaded: start single threaded
     """
     # setup configd environment to use for all configured actions
     if not cnf.has_section('environment'):
         config_environment = os.environ.copy()
     else:
-        config_environment={}
+        config_environment = dict()
         for envKey in cnf.items('environment'):
             config_environment[envKey[0]] = envKey[1]
 
     # run process coordinator ( on console or as daemon )
     # if command-line arguments contain "emulate",  start in emulation mode
     if simulate:
-        proc_handler = modules.processhandler.Handler(socket_filename=cnf.get('main','socket_filename'),
-                                                      config_path='%s/conf'%program_path,
+        proc_handler = modules.processhandler.Handler(socket_filename=cnf.get('main', 'socket_filename'),
+                                                      config_path='%s/conf' % program_path,
                                                       config_environment=config_environment,
                                                       simulation_mode=True)
     else:
-        proc_handler = modules.processhandler.Handler(socket_filename=cnf.get('main','socket_filename'),
-                                                      config_path='%s/conf'%program_path,
+        proc_handler = modules.processhandler.Handler(socket_filename=cnf.get('main', 'socket_filename'),
+                                                      config_path='%s/conf' % program_path,
                                                       config_environment=config_environment)
     proc_handler.single_threaded = single_threaded
     proc_handler.run()
+
 
 def run_watch():
     """ start configd process and restart if it dies unexpected
     """
     current_child_pid = None
+
     def signal_handler(sig, frame):
-        print current_child_pid
         if current_child_pid is not None:
             os.kill(current_child_pid, sig)
         sys.exit(1)
@@ -117,7 +124,7 @@ def run_watch():
 this_config = get_config()
 validate_config(this_config)
 if len(sys.argv) > 1 and 'console' in sys.argv[1:]:
-    print('run %s in console mode'%sys.argv[0])
+    print('run %s in console mode' % sys.argv[0])
     if 'profile' in sys.argv[1:]:
         # profile configd
         # for graphical output use gprof2dot:
@@ -144,19 +151,22 @@ else:
     # run as daemon, wrap the actual work process to enable automatic restart on sudden death
     syslog_socket = "/var/run/log"
     if os.path.exists(syslog_socket):
-        # bind log handle to syslog to catch messages from Daemonize()
-        # (if syslog facility is active)
-        loghandle = logging.getLogger("configd.py")
-        loghandle.setLevel(logging.INFO)
-        handler = logging.handlers.SysLogHandler(address=syslog_socket,
-                                                 facility=logging.handlers.SysLogHandler.LOG_DAEMON)
-        handler.setFormatter(logging.Formatter("%(name)s %(message)s"))
-        loghandle.addHandler(handler)
+        try:
+            # bind log handle to syslog to catch messages from Daemonize()
+            # (if syslog facility is active)
+            loghandle = logging.getLogger("configd.py")
+            loghandle.setLevel(logging.INFO)
+            handler = logging.handlers.SysLogHandler(address=syslog_socket,
+                                                     facility=logging.handlers.SysLogHandler.LOG_DAEMON)
+            handler.setFormatter(logging.Formatter("%(name)s %(message)s"))
+            loghandle.addHandler(handler)
+        except socket.error:
+            loghandle = None
     else:
         loghandle = None
     # daemonize process
     daemon = Daemonize(app=__file__.split('/')[-1].split('.py')[0],
-                       pid=this_config.get('main','pid_filename'),
+                       pid=this_config.get('main', 'pid_filename'),
                        action=run_watch,
                        logger=loghandle
                        )

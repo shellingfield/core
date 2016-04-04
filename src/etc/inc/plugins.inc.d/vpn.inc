@@ -103,6 +103,31 @@ function vpn_syslog()
     return $logfacilities;
 }
 
+function vpn_link_scripts($rootdir, $logtype)
+{
+    $up = <<<'EOD'
+#!/bin/sh
+
+/usr/bin/logger -p local3.info "login,%s,$4,$5"
+
+EOD;
+    $down = <<<'EOD'
+#!/bin/sh
+
+/usr/bin/logger -p local3.info "logout,%s,$4,$5"
+
+/sbin/pfctl -i $1 -Fs
+/sbin/pfctl -K $4/32
+
+EOD;
+
+    file_put_contents($rootdir . '/linkup', sprintf($up, $logtype));
+    file_put_contents($rootdir . '/linkdown', sprintf($down, $logtype));
+
+    chmod($rootdir . '/linkup', 0755);
+    chmod($rootdir . '/linkdown', 0755);
+}
+
 function vpn_pptpd_configure()
 {
     global $config;
@@ -126,11 +151,11 @@ function vpn_pptpd_configure()
         return;
     }
 
-    mkdir('/var/etc/pptp-vpn');
-
     switch ($pptpdcfg['mode']) {
         case 'server':
-            /* write mpd.conf */
+            mkdir('/var/etc/pptp-vpn');
+            vpn_link_scripts('/var/etc/pptp-vpn', 'pptp');
+
             $fd = fopen('/var/etc/pptp-vpn/mpd.conf', 'w');
             if (!$fd) {
                 printf(gettext("Error: cannot open mpd.conf in vpn_pptpd_configure().") . "\n");
@@ -151,8 +176,8 @@ pptps:
   set iface enable proxy-arp
   set iface enable tcpmssfix
   set iface idle 1800
-  set iface up-script /usr/local/sbin/vpn-linkup
-  set iface down-script /usr/local/sbin/vpn-linkdown
+  set iface up-script /var/etc/pptp-vpn/linkup
+  set iface down-script /var/etc/pptp-vpn/linkdown
   set ipcp ranges {$pptpdcfg['localip']}/32 ippool pool1
   set ipcp yes vjcomp
 
@@ -167,19 +192,13 @@ EOD;
                     $mpdconf .= " " . $pptpdcfg['dns2'];
                 }
                 $mpdconf .= "\n";
-            } elseif (isset($config['dnsmasq']['enable'])) {
+            } elseif (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) {
                 $mpdconf .= "  set ipcp dns " . get_interface_ip("lan");
-                if ($syscfg['dnsserver'][0]) {
+                if (isset($syscfg['dnsserver'][0])) {
                     $mpdconf .= " " . $syscfg['dnsserver'][0];
                 }
                 $mpdconf .= "\n";
-            } elseif (isset($config['unbound']['enable'])) {
-                $mpdconf .= "  set ipcp dns " . get_interface_ip("lan");
-                if ($syscfg['dnsserver'][0]) {
-                    $mpdconf .= " " . $syscfg['dnsserver'][0];
-                }
-                $mpdconf .= "\n";
-            } elseif (is_array($syscfg['dnsserver']) && ($syscfg['dnsserver'][0])) {
+            } elseif (isset($syscfg['dnsserver'][0])) {
                 $mpdconf .= "  set ipcp dns " . join(" ", $syscfg['dnsserver']) . "\n";
             }
 
@@ -251,7 +270,6 @@ EOD;
             fclose($fd);
             unset($mpdconf);
 
-            /* write mpd.secret */
             $fd = fopen('/var/etc/pptp-vpn/mpd.secret', 'w');
             if (!$fd) {
                 printf(gettext("Error: cannot open mpd.secret in vpn_pptpd_configure().") . "\n");
@@ -341,70 +359,42 @@ function vpn_pppoe_configure(&$pppoecfg)
         echo gettext("Configuring PPPoE VPN service...");
     }
 
-    mkdir("/var/etc/pppoe{$pppoecfg['pppoeid']}-vpn");
-
     switch ($pppoecfg['mode']) {
         case 'server':
+            mkdir("/var/etc/pppoe{$pppoecfg['pppoeid']}-vpn");
+            vpn_link_scripts("/var/etc/pppoe{$pppoecfg['pppoeid']}-vpn", 'poes');
+
             $pppoe_interface = get_real_interface($pppoecfg['interface']);
 
-            /* write mpd.conf */
             $fd = fopen("/var/etc/pppoe{$pppoecfg['pppoeid']}-vpn/mpd.conf", "w");
             if (!$fd) {
                 printf(gettext("Error: cannot open mpd.conf in vpn_pppoe_configure().") . "\n");
                 return 1;
             }
-            $mpdconf = "\n\n";
-            $mpdconf .= "poes:\n";
 
-            for ($i = 0; $i < $pppoecfg['n_pppoe_units']; $i++) {
-                $mpdconf .= "  load poes{$pppoecfg['pppoeid']}{$i}\n";
+            $iprange = $pppoecfg['remoteip'] . ' ';
+            $iprange .= long2ip32(ip2long($pppoecfg['remoteip']) + $pppoecfg['n_pppoe_units'] - 1);
+
+            $iptype = 'ippool pool1';
+            if (isset($pppoecfg['radius']['server']['enable']) && isset($pppoecfg['radius']['radiusissueips'])) {
+                $iptype = '0.0.0.0/0';
             }
 
-            for ($i = 0; $i < $pppoecfg['n_pppoe_units']; $i++) {
+            $mpdconf = <<<EOD
+startup:
 
-                $clientip = long2ip32(ip2long($pppoecfg['remoteip']) + $i);
-
-                if (isset($pppoecfg['radius']['radiusissueips']) && isset($pppoecfg['radius']['server']['enable'])) {
-                    $isssue_ip_type = "set ipcp ranges {$pppoecfg['localip']}/32 0.0.0.0/0";
-                } else {
-                    $isssue_ip_type = "set ipcp ranges {$pppoecfg['localip']}/32 {$clientip}/32";
-                }
-
-                $mpdconf .=<<<EOD
-
-poes{$pppoecfg['pppoeid']}{$i}:
-  new -i poes{$pppoecfg['pppoeid']}{$i} poes{$pppoecfg['pppoeid']}{$i} poes{$pppoecfg['pppoeid']}{$i}
-  {$isssue_ip_type}
-  load pppoe_standard
-
-EOD;
-            }
-
-            $mpdconf .=<<<EOD
-
-pppoe_standard:
-  set bundle no multilink
-  set bundle enable compression
-  set auth max-logins 1
-  set iface up-script /usr/local/sbin/vpn-linkup
-  set iface down-script /usr/local/sbin/vpn-linkdown
+poes:
+  set ippool add pool1 {$iprange}
+  create bundle template B
+  set iface up-script /var/etc/pppoe{$pppoecfg['pppoeid']}-vpn/linkup
+  set iface down-script /var/etc/pppoe{$pppoecfg['pppoeid']}-vpn/linkdown
   set iface idle 0
   set iface disable on-demand
   set iface disable proxy-arp
   set iface enable tcpmssfix
   set iface mtu 1500
-  set link no pap chap eap
-  set link enable chap
-  set link keep-alive 60 180
-  set ipcp yes vjcomp
   set ipcp no vjcomp
-  set link max-redial -1
-  set link mtu 1492
-  set link mru 1492
-  set ccp yes mpp-e40
-  set ccp yes mpp-e128
-  set ccp yes mpp-stateless
-  set link latency 1
+  set ipcp ranges {$pppoecfg['localip']}/32 {$iptype}
 
 EOD;
 
@@ -414,21 +404,41 @@ EOD;
                     $mpdconf .= " " . $pppoecfg['dns2'];
                 }
                 $mpdconf .= "\n";
-            } elseif (isset($config['dnsmasq']['enable'])) {
+            } elseif (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) {
                 $mpdconf .= "  set ipcp dns " . get_interface_ip("lan");
-                if ($syscfg['dnsserver'][0]) {
+                if (isset($syscfg['dnsserver'][0])) {
                     $mpdconf .= " " . $syscfg['dnsserver'][0];
                 }
                 $mpdconf .= "\n";
-            } elseif (isset($config['unbound']['enable'])) {
-                $mpdconf .= "  set ipcp dns " . get_interface_ip("lan");
-                if ($syscfg['dnsserver'][0]) {
-                    $mpdconf .= " " . $syscfg['dnsserver'][0];
-                }
-                $mpdconf .= "\n";
-            } elseif (is_array($syscfg['dnsserver']) && ($syscfg['dnsserver'][0])) {
+            } elseif (isset($syscfg['dnsserver'][0])) {
                 $mpdconf .= "  set ipcp dns " . join(" ", $syscfg['dnsserver']) . "\n";
             }
+
+            $mpdconf .= <<<EOD
+
+  set bundle enable compression
+  set ccp yes mppc
+  set mppc yes e40
+  set mppc yes e128
+  set mppc yes stateless
+
+  create link template L pppoe
+  set link action bundle B
+  set link no multilink
+  set link disable pap
+  set link disable eap
+  set link enable chap
+  set link keep-alive 10 60
+  set link max-redial -1
+  set link mtu 1492
+  set link mru 1492
+  set link latency 1
+  set pppoe service pppoe{$pppoecfg['pppoeid']}
+  set pppoe iface {$pppoe_interface}
+  set link enable incoming
+  set auth max-logins 1
+
+EOD;
 
             if (isset($pppoecfg['radius']['server']['enable'])) {
                 $radiusport = "";
@@ -459,34 +469,7 @@ EOD;
             fclose($fd);
             unset($mpdconf);
 
-            /* write mpd.links */
-            $fd = fopen("/var/etc/pppoe{$pppoecfg['pppoeid']}-vpn/mpd.links", "w");
-            if (!$fd) {
-                printf(gettext("Error: cannot open mpd.links in vpn_pppoe_configure().") . "\n");
-                return 1;
-            }
-
-            $mpdlinks = "";
-
-            for ($i = 0; $i < $pppoecfg['n_pppoe_units']; $i++) {
-                $mpdlinks .=<<<EOD
-
-poes{$pppoecfg['pppoeid']}{$i}:
-  set phys type pppoe
-  set pppoe iface {$pppoe_interface}
-  set pppoe service "*"
-  set pppoe disable originate
-  set pppoe enable incoming
-
-EOD;
-            }
-
-            fwrite($fd, $mpdlinks);
-            fclose($fd);
-            unset($mpdlinks);
-
             if ($pppoecfg['username']) {
-                /* write mpd.secret */
                 $fd = fopen("/var/etc/pppoe{$pppoecfg['pppoeid']}-vpn/mpd.secret", "w");
                 if (!$fd) {
                     printf(gettext("Error: cannot open mpd.secret in vpn_pppoe_configure().") . "\n");
@@ -545,12 +528,12 @@ function vpn_l2tp_configure()
         echo gettext('Configuring L2TP VPN service...');
     }
 
-    mkdir('/var/etc/l2tp-vpn');
-
     switch ($l2tpcfg['mode']) {
         case 'server':
 
-            /* write mpd.conf */
+            mkdir('/var/etc/l2tp-vpn');
+            vpn_link_scripts('/var/etc/l2tp-vpn', 'l2tp');
+
             $fd = fopen("/var/etc/l2tp-vpn/mpd.conf", "w");
             if (!$fd) {
                 printf(gettext("Error: cannot open mpd.conf in vpn_l2tp_configure().") . "\n");
@@ -574,8 +557,8 @@ l2tps:
   create bundle template B
   set iface disable on-demand
   set iface enable proxy-arp
-  set iface up-script /usr/local/sbin/vpn-linkup
-  set iface down-script /usr/local/sbin/vpn-linkdown
+  set iface up-script /var/etc/l2tp-vpn/linkup
+  set iface down-script /var/etc/l2tp-vpn/linkdown
   set ipcp ranges {$l2tpcfg['localip']}/32 {$iptype}
   set ipcp yes vjcomp
 
@@ -650,7 +633,6 @@ EOD;
             fclose($fd);
             unset($mpdconf);
 
-            /* write mpd.secret */
             $fd = fopen("/var/etc/l2tp-vpn/mpd.secret", "w");
             if (!$fd) {
                 printf(gettext("Error: cannot open mpd.secret in vpn_l2tp_configure().") . "\n");
