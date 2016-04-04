@@ -35,7 +35,7 @@ msgstr "VPN: PPTP: ユーザ: 編集: ページへのアクセスを許可"
 
 # File: lang/dynamic/helpers/acl.php, line: 44
 msgid "Show all items on help menu"
-msgstr "ヘルプメニューにすべての項目を表示"
+msgstr "ヘルプメニューの全項目を表示"
 
 msgid "Allow access to the 'System: Firmware: Settings' page."
 msgstr "システム: ファームウェア: 設定: ページへのアクセスを許可"
@@ -94,7 +94,7 @@ msgstr "診断: ログ: 設定: ページへのアクセスを許可"
 
 # File: lang/dynamic/helpers/acl.php, line: 66
 msgid "Allow access to the 'Service: Universal Plug and Play' page."
-msgstr ""サービス: Universal Plug and Play: ページヘのアクセスを許可
+msgstr "サービス: ユニバーサルプラグアンドプレイ: ページへのアクセスを許可"
 
 msgid "Allow access to the 'Firewall: Virtual IP Addresses' page."
 msgstr "ファイアウォール: 仮想 IP アドレス: ページへのアクセスを許可"
@@ -178,7 +178,7 @@ msgstr "診断: ソケット: ページへのアクセスを許可"
 
 # File: lang/dynamic/helpers/acl.php, line: 99
 msgid "Allow access to the 'Status: Universal Plug and Play' page."
-msgstr "ステータス: Universal Plug and Play: ページヘのアクセスを許可"
+msgstr "ステータス: ユニバーサルプラグアンドプレイ: ページへのアクセスを許可"
 
 msgid "Allow access to the 'Services: PPPoE Server' page."
 msgstr "サービス: PPPoE サーバ: ページへのアクセスを許可"
@@ -741,6 +741,7 @@ msgstr ""
 msgid ""
 "Enter the hours for the job to act, can also be a comma separated list, * "
 "(each) or a range (ex. 10,11,12 or 10-12)"
+msgstr ""
 "ジョブの動作時間を時間単位で入力してください。カンマ区切りリスト、* (毎時)、範囲 ( 例: 10,11,12 や 10-12 ) も使用できます。"
 
 # File: lang/dynamic/helpers/controllers.php, line: 88
@@ -815,6 +816,7 @@ msgstr "ログの保存を有効"
 msgid ""
 "If set (default), Squid will include a Via header in requests and\n"
 "            replies as required by RFC2616."
+msgstr ""
 "設定されている場合 ( デフォルト )、RFC2616 で必須となっている通り、\n"
 "Squid はリクエストとリプライに Via ヘッダを含めます。"
 
