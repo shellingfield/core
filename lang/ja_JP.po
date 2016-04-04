@@ -1515,7 +1515,7 @@ msgstr "SNMP"
 # File: lang/dynamic/helpers/models.php, line: 173
 # File: src/www/status_upnp.php, line: 44
 msgid "Universal Plug and Play"
-msgstr "Universal Plug and Play"
+msgstr "ユニバーサルプラグアンドプレイ"
 
 # File: lang/dynamic/helpers/models.php, line: 145
 msgid "WoLEdit"
